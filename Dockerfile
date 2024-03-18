@@ -25,4 +25,3 @@ ENV PATH /opt/conda/envs/cellpose/bin:$PATH
 
 # Set entry point to bash
 CMD ["/bin/bash"]
-
