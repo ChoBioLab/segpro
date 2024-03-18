@@ -17,6 +17,7 @@ RUN conda create --name cellpose python=3.8 && \
 # Activate cellpose environment and install cellpose
 RUN /bin/bash -c "source activate cellpose && \
     python -m pip install cellpose && \
+    sed -i '712s/protocol=3/protocol=pickle.HIGHEST_PROTOCOL/' /opt/conda/envs/cellpose/lib/python3.8/site-packages/numpy/lib/format.py && \
     conda deactivate"
 
 # Set environment variables
