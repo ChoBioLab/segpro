@@ -1,0 +1,34 @@
+#BSUB -J cellpose
+#BSUB -P acc_untreatedIBD
+#BSUB -q gpu
+#BSUB -gpu num=1
+#BSUB -R a10080g
+#BSUB -n 20
+#BSUB -R rusage[mem=60GB]
+#BSUB -R span[hosts=1]
+#BSUB -W 08:00
+#BSUB -u christopher.tastad@mssm.edu
+#BSUB -o output_%J.stdout
+#BSUB -eo error_%J.stderr
+
+
+source /hpc/users/tastac01/micromamba/etc/profile.d/micromamba.sh
+eval "$(micromamba shell hook --shell bash)"
+micromamba activate cellpose4
+
+
+/sc/arion/projects/untreatedIBD/ctastad/projects/segpro/run-cellpose.sh
+
+#export http_proxy=http://172.28.7.1:3128
+#export https_proxy=http://172.28.7.1:3128
+#export all_proxy=http://172.28.7.1:3128
+#export no_proxy=localhost,*.chimera.hpc.mssm.edu,172.28.0.0/16
+#
+#WORK_DIR="/sc/arion/projects/untreatedIBD/ctastad/projects/segpro"
+#
+#ml singularity
+#
+#singularity exec \
+#  -B "$WORK_DIR":"$WORK_DIR" \
+#  docker://public.ecr.aws/chobiolab/segpro:1 "$WORK_DIR"/run-cellpose.sh
+#
