@@ -1,28 +1,29 @@
-# Use an official Miniconda3 image as a base
-FROM continuumio/miniconda3:latest
+# Use an official NVIDIA CUDA image as the base
+FROM nvidia/cuda:11.3.1-base-ubuntu20.04
 
-# Create xenium environment
-RUN conda create --name xenium python=3.9.12 && \
-    conda init bash
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    python3.8 \
+    python3-pip \
+    python3.8-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Activate xenium environment and install libraries
-RUN /bin/bash -c "source activate xenium && \
-    conda install -y tifffile pyarrow pandas scipy && \
-    conda deactivate"
+# Update alternatives to use Python 3.8 as the default python3
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1 && \
+    update-alternatives --set python3 /usr/bin/python3.8
 
-# Create cellpose environment
-RUN conda create --name cellpose python=3.8 && \
-    conda init bash
+# Upgrade pip and setuptools
+RUN python3 -m pip install --upgrade pip setuptools wheel
 
-# Activate cellpose environment and install cellpose
-RUN /bin/bash -c "source activate cellpose && \
-    python -m pip install cellpose && \
-    sed -i '712s/protocol=3/protocol=pickle.HIGHEST_PROTOCOL/' /opt/conda/envs/cellpose/lib/python3.8/site-packages/numpy/lib/format.py && \
-    conda deactivate"
+# Install Python dependencies for Cellpose
+RUN python3 -m pip install cellpose==3.0.5 torch==1.12.0
 
-# Set environment variables
-ENV PATH /opt/conda/envs/xenium/bin:$PATH
-ENV PATH /opt/conda/envs/cellpose/bin:$PATH
+# Set environment variables for CUDA (might not be needed as the base image takes care of it)
+ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 
 # Set entry point to bash
 CMD ["/bin/bash"]
