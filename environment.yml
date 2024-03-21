@@ -1,4 +1,4 @@
-name: cellpose4
+name: cellpose
 channels:
 - nvidia
 - pkgs/main

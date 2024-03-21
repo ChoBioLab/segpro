@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cellpose \
-  --dir /sc/arion/projects/untreatedIBD/ctastad/projects/segpro \
+  --dir /home/cw/projects/cholab/segpro \
   --pretrained_model nuclei \
   --chan 0 \
   --chan2 0 \
